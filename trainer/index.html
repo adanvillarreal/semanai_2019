@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <!-- Load the latest version of TensorFlow.js -->
+    <link rel="stylesheet" type="text/css" href="./style/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://unpkg.com/@tensorflow/tfjs"></script>
+    <script src="https://unpkg.com/@tensorflow-models/mobilenet"></script>
+    <script src="https://unpkg.com/@tensorflow-models/knn-classifier"></script>
+    <style>
+      p    {color: white;}
+    </style>
+    <h1>
+      Transfer Learning for Products!
+    </h1>
+  </head>
+  <body >
+    <div id='contenedor'>
+      <div id='divVideo'>
+        <video autoplay playsinline muted id="webcam" width="500" height="400"></video>
+      </div>
+      <div id='botones'>
+		<!--Aqui va tu codigo: Aqui pueden agregar sus propios productos -->
+		<!--Ejemplo...<button type="button" class="btn btn-primary" id="class-a">Heineken Regular</button>-->
+
+        <p id="contador" color="white">0</p>
+      </div>
+      <div id ="Salvar modelo">
+        <button style= "margin-top:10;" type="button" class="btn btn-secondary" id="save" onclick="save()">Save Model</button>
+      </div>
+    </div>
+    <div id="console"></div>
+    <script src="index.js"></script>
+  </body>
+</html>
