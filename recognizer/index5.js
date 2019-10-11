@@ -1,11 +1,22 @@
 //Realizado el 5/31/2019
+
+//Variable para mobilnet
 let net;
+
+//Variable para webcam
 const webcamElement = document.getElementById('webcam');
+
+//Variable para el KNN
 const classifier = knnClassifier.create();
+
+//Variable Total para el precio
 let total = 0.0;
+
+
 let flag = true;
 var wait = ms => new Promise((r, j)=>setTimeout(r, ms))
 
+//Rutina para inicializar webcam
 async function setupWebcam() {
   return new Promise((resolve, reject) => {
     const navigatorAny = navigator;
@@ -26,6 +37,7 @@ async function setupWebcam() {
   });
 }
 
+//Esta función cargara al elemento knn los pesos previamente obtenidos en el trainer. hint: usar función setClassifierDataset
 function knnLoad(){
   //can be change to other source
   let tensorObj = JSON.parse(data);
@@ -34,7 +46,10 @@ function knnLoad(){
     tensorObj[key] = tf.tensor(tensorObj[key], [Math.floor(tensorObj[key].length / 1000), 1024]);
     console.log(Math.floor(tensorObj[key].length));
   });
-  classifier.setClassifierDataset(tensorObj);
+  // tu codigo va a aquí
+  
+  
+  ///
 }
 
 async function app() {
@@ -44,11 +59,9 @@ async function app() {
   net = await mobilenet.load();
   console.log('Sucessfully loaded model');
 
-  // Make a prediction through the model on our image.
-  //const imgEl = document.getElementById('img');
-  //const result = await net.classify(imgEl);
   console.log('Loading Knn-classifier');
   knnLoad();
+  
   console.log('Knn loaded');
   await setupWebcam();
 
@@ -60,7 +73,11 @@ async function app() {
       // Get the most likely class and confidences from the classifier module.
       let k = 10;
       const result = await classifier.predictClass(activation,k);
-
+	  
+	  //*************************
+	 
+	  //Modifica este bloque de acuerdo a tus productos esto se puso como ejemplo
+	   // AQUI EMPIEZA
       const classes = ['Heineken', 'Heineken-Light', 'Heineken can','Adidas thermos flask','Coca-cola','Cafe Andatti','Background'];
       let precio = 0.0;
       if(result.label=="0"){
@@ -78,18 +95,7 @@ async function app() {
       } else{
         //console.log('Nada');
       }
-
-      /* Comentado para pasarlo abajo
-      document.getElementById('console').innerText = `
-        prediction: ${classes[result.label]}\n
-        probability: ${Math.floor(result.confidences[result.label]*100)}\n
-        PRECIO:     ${precio}`;
-        */
-      /*
-      document.getElementById('console').innerText = `
-        prediction: ${classes[result.label]}\n
-        probability: ${result.confidences[result.label]}
-      `;*/
+     
       if((result.label=="0")&&(result.confidences[result.label]>=0.7)){
         document.getElementById('console').innerText = `
           prediction: ${classes[result.label]}\n
@@ -162,17 +168,15 @@ async function app() {
             Total: $ ${total}`;
       }
       else{
-        //document.getElementById("fotos").innerHTML="<img id=\"image5\" src=\"img/fondo.jpg\" />";
         //console.log('nada');
       }
     }
-    // Give some breathing room by waiting for the next animation frame to
-    // fire.
+	// AQUI TERMINA
+	//*************************
     await tf.nextFrame();
   }
 }
 
-//document.getElementById('predict-classes').addEventListener('click', () => predict());
 
 function predict(){
   console.log('Predict');
@@ -195,9 +199,12 @@ function toFixed(num, fixed) {
     return Math.floor(num * fixed) / fixed;
 }
 
+//función para agregar oferta a un producto
 function oferta(nombre){
   Swal.fire('Product ' + ' 2 for 1 sale!');
 }
+
+
 //función para lanzar la alerta
 function alerta(nombre,producto,precio){
   //se agrego este if para agregar oferta
