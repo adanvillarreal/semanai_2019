@@ -37,19 +37,17 @@ async function setupWebcam() {
   });
 }
 
-//Esta función cargara al elemento knn los pesos previamente obtenidos en el trainer. hint: usar función setClassifierDataset
-function knnLoad(){
+//Esta función cargara al elemento knn los pesos previamente obtenidos en el trainer.
+function knnLoad(data){
   //can be change to other source
-  let tensorObj = JSON.parse(data);
+  let tensorObj = data;
   //covert back to tensor
   Object.keys(tensorObj).forEach((key) => {
     tensorObj[key] = tf.tensor(tensorObj[key], [Math.floor(tensorObj[key].length / 1000), 1024]);
     console.log(Math.floor(tensorObj[key].length));
   });
-  // tu codigo va a aquí
-  
-  
-  ///
+  // TODO: Completar la función. hint: usar función setClassifierDataset
+  classifier.setClassifierDataset(tensorObj);
 }
 
 async function app() {
@@ -60,8 +58,9 @@ async function app() {
   console.log('Sucessfully loaded model');
 
   console.log('Loading Knn-classifier');
-  knnLoad();
-  
+  var data = loadFile('knnClassifierAndatti.json');
+  knnLoad(data);
+
   console.log('Knn loaded');
   await setupWebcam();
 
@@ -73,12 +72,9 @@ async function app() {
       // Get the most likely class and confidences from the classifier module.
       let k = 10;
       const result = await classifier.predictClass(activation,k);
-	  
-	  //*************************
-	 
-	  //Modifica este bloque de acuerdo a tus productos esto se puso como ejemplo
-	   // AQUI EMPIEZA
-      const classes = ['Heineken', 'Heineken-Light', 'Heineken can','Adidas thermos flask','Coca-cola','Cafe Andatti','Background'];
+
+     // TODO: Agregar las clases definidas en el trainer.
+      const classes = ['A', 'B', 'C'];
       let precio = 0.0;
       if(result.label=="0"){
         precio=1.55;
@@ -93,9 +89,9 @@ async function app() {
       }else if (result.label=="5"){
           precio=17.50;
       } else{
-        //console.log('Nada');
+        console.log('Nada');
       }
-     
+
       if((result.label=="0")&&(result.confidences[result.label]>=0.7)){
         document.getElementById('console').innerText = `
           prediction: ${classes[result.label]}\n
@@ -175,6 +171,30 @@ async function app() {
 	//*************************
     await tf.nextFrame();
   }
+}
+
+// Carga JSON generado por trainer. No funciona en chrome, abrir en firefox.
+function loadFile() {
+  var data1;
+  $.ajax({
+    url: './knnClassifierAndatti.json',
+    type: 'GET',
+    async: false,
+    dataType: 'application/json',
+    success: function(data) {
+      data1 = data;
+    },
+    error : function(err) {
+      data1 = err.responseText;
+      console.log(err.responseText);
+    }
+  });
+  data1 = JSON.parse(data1);
+  return data1;
+}
+
+function checkData(){
+  console.log('ready')
 }
 
 
